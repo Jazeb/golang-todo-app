@@ -21,19 +21,19 @@ type todoItemModel struct {
     Completed bool
 }
 
-func createItem(w http.ResponseWriter, r *http.Request){
-	description := r.FormValue("description")
+func createItem(res http.ResponseWriter, req *http.Request){
+	description := req.FormValue("description")
 	log.WithFields(log.Fields{"description":description}).Info("Add new todo item, saving to databse.")
 	todo := &todoItemModel{Description:description, Completed:false}
 	db.Create(&todo)
 	result := db.Last(&todo)
-	w.Header().Set("content-type","application/json")
-	json.NewEncoder(w).Encode(result.Value)
+	res.Header().Set("content-type","application/json")
+	json.NewEncoder(res).Encode(result.Value)
 }
-func getHealthz(w http.ResponseWriter, r *http.Request){
+func getHealthz(res http.ResponseWriter, req *http.Request){
 	fmt.Print("\nHello getting healths")
-	w.Header().Set("Content-Type", "application/json")
-	io.WriteString(w, `{"alive":true}`)
+	res.Header().Set("Content-Type", "application/json")
+	io.WriteString(res, `{"alive":true}`)
 }
 
 func updateItem(res http.ResponseWriter, req *http.Request) { // res, req
